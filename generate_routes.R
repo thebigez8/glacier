@@ -8,12 +8,12 @@ sourceCpp("connectivity.cpp")
 dists <- read.csv("distances.csv", header = TRUE, sep = ',') %>%
   acast(start ~ end, value.var = "miles", fill = -1)
 stopifnot(isSymmetric(dists))
+camps <- rownames(dists)
 
 generate_routes <- function(start.camp = "MANYGLACIER", end.camp = start.camp,
                             miles.per.day = c(0, 12.2), n.days = 7,
                             exclude.camps = c("FLA", "PACKERSROOST", "LOGANPASS", "SIYEHBEND", "MOJ"))
 {
-  camps <- rownames(dists)
   start.camp <- match.arg(start.camp, camps, several.ok = FALSE)
   end.camp <- match.arg(end.camp, camps, several.ok = FALSE)
   exclude.camps <- match.arg(exclude.camps, camps, several.ok = TRUE)
@@ -87,4 +87,8 @@ out4 <- generate_routes(exclude.camps = c("FLA", "PACKERSROOST", "LOGANPASS", "S
   filter(Night.6 %in% c("ELF", "ELH")) %T>%
   write.table("route_option4.csv", sep = ',', col.names = TRUE, row.names = FALSE)
 
-write.table(connectivity(dists), "distance_matrix.csv", sep = ',', col.names = TRUE, row.names = TRUE)
+dists %>%
+  connectivity() %>%
+  set_rownames(camps) %>%
+  set_colnames(camps) %>%
+  write.table("distance_matrix.csv", sep = ',', col.names = TRUE, row.names = TRUE)
