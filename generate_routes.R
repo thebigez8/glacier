@@ -86,3 +86,5 @@ out4 <- generate_routes(exclude.camps = c("FLA", "PACKERSROOST", "LOGANPASS", "S
   filter(Night.4 != "MANYGLACIER" & Night.5 != "MANYGLACIER") %>%
   filter(Night.6 %in% c("ELF", "ELH")) %T>%
   write.table("route_option4.csv", sep = ',', col.names = TRUE, row.names = FALSE)
+
+write.table(connectivity(dists), "distance_matrix.csv", sep = ',', col.names = TRUE, row.names = TRUE)
