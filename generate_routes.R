@@ -10,9 +10,11 @@ dists <- read.csv("distances.csv", header = TRUE, sep = ',') %>%
 stopifnot(isSymmetric(dists))
 camps <- rownames(dists)
 
+ex.camps <- c("FLA", "PACKERSROOST", "LOGANPASS", "SIYEHBEND", "MOJ")
+
 generate_routes <- function(start.camp = "MANYGLACIER", end.camp = start.camp,
                             miles.per.day = c(0, 12.2), n.days = 7,
-                            exclude.camps = c("FLA", "PACKERSROOST", "LOGANPASS", "SIYEHBEND", "MOJ"))
+                            exclude.camps = ex.camps)
 {
   start.camp <- match.arg(start.camp, camps, several.ok = FALSE)
   end.camp <- match.arg(end.camp, camps, several.ok = FALSE)
@@ -69,16 +71,17 @@ out2 <- generate_routes(n.days = 6) %>%
   filter(Night.5 %in% c("ELF", "ELH")) %T>%
   write.table("route_option2.csv", sep = ',', col.names = TRUE, row.names = FALSE)
 
-out3 <- generate_routes(exclude.camps = c("FLA", "PACKERSROOST", "LOGANPASS", "SIYEHBEND", "MOJ", "GOA")) %>%
+out3 <- generate_routes(exclude.camps = c(ex.camps, "GOA")) %>%
   # go OUT this way
   filter(Night.1 == "GRN") %>%
   filter(Night.2 == "FIF") %>%
   # come BACK this way
   filter(Night.4 != "MANYGLACIER" & Night.5 != "MANYGLACIER") %>%
+  filter(Night.5 == "GAB") %>%
   filter(Night.6 %in% c("ELF", "ELH")) %T>%
   write.table("route_option3.csv", sep = ',', col.names = TRUE, row.names = FALSE)
 
-out4 <- generate_routes(exclude.camps = c("FLA", "PACKERSROOST", "LOGANPASS", "SIYEHBEND", "MOJ", "GOA", "GAB")) %>%
+out4 <- generate_routes(exclude.camps = c(ex.camps, "GOA", "GAB")) %>%
   # go OUT this way
   filter(Night.1 == "GRN") %>%
   filter(Night.2 == "FIF") %>%
